@@ -99,17 +99,26 @@ class GithelpersController extends AdminController
         return redirect()->back();
     }
 
+    /**
+     * @param $dir Target folder to get information from
+     * @param bool $cache Take information from cache? (use false to force up to date)
+     * @return array [dir => target directory, basename => directory basename, changed_files => number of git tracked changed files, last_tag => last git tag, has_readme => bool (true = has README.md file)]
+     */
     public function getRepoInformation($dir, $cache = true)
     {
         if ( $cache ) {
-            return Cache::rememberForever('sanatorium.githelper.'.$dir, function() use ($dir) {
+            $repo = Cache::rememberForever('sanatorium.githelper.'.$dir, function() use ($dir) {
                 return $this->getRepoInformation($dir, false);
             });
+
+            $repo['changed_files'] = $this->getChangedFilesCountFromDir($dir);
+
+            return $repo;
         }
 
         $basename = basename($dir);
-        $changed_files = (int) exec('git -C "' . $dir . '" status | grep \'modified:\' | wc -l');
-        $last_tag = exec('git -C "' . $dir . '" describe --tags');
+        $changed_files = $this->getChangedFilesCountFromDir($dir);
+        $last_tag = $this->getLastTagFromDir($dir);
         $has_readme = file_exists($this->getReadmePath($dir));
 
         $repo = [
@@ -121,6 +130,16 @@ class GithelpersController extends AdminController
         ];
 
         return $repo;
+    }
+
+    public function getChangedFilesCountFromDir($dir)
+    {
+        return (int) exec('git -C "' . $dir . '" status | grep \'modified:\' | wc -l');
+    }
+
+    public function getLastTagFromDir($dir)
+    {
+        return exec('git -C "' . $dir . '" describe --tags');
     }
 
     public function refreshRepoInformation($dir)
