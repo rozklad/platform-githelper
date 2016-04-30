@@ -2,6 +2,7 @@
 
 use Platform\Access\Controllers\AdminController;
 use Sanatorium\Githelper\Repositories\Githelper\GithelperRepositoryInterface;
+use Cache;
 
 class GithelpersController extends AdminController
 {
@@ -90,14 +91,22 @@ class GithelpersController extends AdminController
         exec('git -C "' . $dir . '" tag ' . $new_tag);
         exec('git -C "' . $dir . '" push -u origin master --tags');
 
+        $this->refreshRepoInformation($dir);
+
         // @todo - catch exceptions
         $this->alerts->success(trans('sanatorium/githelper::common.messages.tagpush.success', ['tag' => $new_tag]));
 
         return redirect()->back();
     }
 
-    public function getRepoInformation($dir)
+    public function getRepoInformation($dir, $cache = true)
     {
+        if ( $cache ) {
+            return Cache::rememberForever('sanatorium.githelper.'.$dir, function() use ($dir) {
+                return $this->getRepoInformation($dir, false);
+            });
+        }
+
         $basename = basename($dir);
         $changed_files = (int) exec('git -C "' . $dir . '" status | grep \'modified:\' | wc -l');
         $last_tag = exec('git -C "' . $dir . '" describe --tags');
@@ -112,6 +121,13 @@ class GithelpersController extends AdminController
         ];
 
         return $repo;
+    }
+
+    public function refreshRepoInformation($dir)
+    {
+        Cache::forget('sanatorium.githelper.'.$dir);
+
+        $this->getRepoInformation($dir);
     }
 
     public function getReadmePath($dir = null)
@@ -140,6 +156,8 @@ class GithelpersController extends AdminController
         $readmeContents = $this->getReadmeContents($dir);
 
         file_put_contents($readmePath, $readmeContents);
+
+        $this->refreshRepoInformation($dir);
 
         $this->alerts->success(trans('sanatorium/githelper::common.messages.readme.success'));
 
