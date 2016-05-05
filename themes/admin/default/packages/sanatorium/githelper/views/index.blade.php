@@ -117,7 +117,7 @@
                             </small>
                         </td>
                         <td class="text-right">
-                            <a href="{{ route('sanatorium.githelper.readme') }}?dir={{ $repo['dir'] }}" class="btn btn-default btn-sm" data-toggle="tooltip" data-title="{{ trans('sanatorium/githelper::common.buttons.readme') }}">
+                            <a href="{{ route('sanatorium.githelper.readme', ['type' => 'patch']) }}?dir={{ $repo['dir'] }}" class="btn btn-default btn-sm" data-toggle="tooltip" data-title="{{ trans('sanatorium/githelper::common.buttons.readme') }}">
                                 <i class="fa fa-file-text" aria-hidden="true"></i>
                             </a>
 

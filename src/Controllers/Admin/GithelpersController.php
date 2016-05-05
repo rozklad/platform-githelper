@@ -20,19 +20,19 @@ class GithelpersController extends AdminController
         // Paths to find git repositories (without trailing slash)
         $paths = config('sanatorium-githelper.paths');
 
-        foreach ($paths as $path)
+        foreach ( $paths as $path )
         {
             $dirs = array_filter(glob($path . '/*'), 'is_dir');
 
-            foreach ($dirs as $dir)
+            foreach ( $dirs as $dir )
             {
 
                 $is_repo = false;
 
-                if (file_exists($dir . '/.git'))
+                if ( file_exists($dir . '/.git') )
                     $is_repo = true;
 
-                if ($is_repo)
+                if ( $is_repo )
                 {
 
                     $repo = $this->getRepoInformation($dir);
@@ -53,7 +53,8 @@ class GithelpersController extends AdminController
     /**
      * Increase version in tag (f.e. 0.1.0 -> 0.1.1)
      * and push to remote origin master
-     * Versioning used: MAJOR.MINOR.PATCH (1.0.0)
+     * used: MAJOR.MINOR.PATCH (1.0.0)
+     *
      * @return mixed
      */
     public function tagpush($type = 'patch')
@@ -65,14 +66,14 @@ class GithelpersController extends AdminController
         $version_format = '%d.%d.%d';
 
         list($major, $minor, $patch) = explode('.', $repo['last_tag']);
-
-        if ($patch < 9 && $type == 'patch')
+        
+        if ( $patch < 9 && $type == 'patch' )
         {
             $patch ++;
             $new_tag = sprintf($version_format, $major, $minor, $patch);
         } else
         {
-            if ($minor < 9 && ($type == 'minor' || $type == 'patch') )
+            if ( $minor < 9 && ($type == 'minor' || $type == 'patch') )
             {
                 $patch = 0;
                 $minor ++;
@@ -101,15 +102,17 @@ class GithelpersController extends AdminController
     }
 
     /**
-     * @param $dir Target folder to get information from
+     * @param      $dir   Target folder to get information from
      * @param bool $cache Take information from cache? (use false to force up to date)
-     * @return array [dir => target directory, basename => directory basename, changed_files => number of git tracked changed files, last_tag => last git tag, has_readme => bool (true = has README.md file)]
+     * @return array [dir => target directory, basename => directory basename, changed_files => number of git tracked
+     *               changed files, last_tag => last git tag, has_readme => bool (true = has README.md file)]
      */
     public function getRepoInformation($dir, $cache = true)
     {
-        Cache::forget('sanatorium.githelper.'.$dir);
-        if ( $cache ) {
-            $repo = Cache::rememberForever('sanatorium.githelper.'.$dir, function() use ($dir) {
+        if ( $cache )
+        {
+            $repo = Cache::rememberForever('sanatorium.githelper.' . $dir, function () use ($dir)
+            {
                 return $this->getRepoInformation($dir, false);
             });
 
@@ -130,13 +133,13 @@ class GithelpersController extends AdminController
             'changed_files' => $changed_files,
             'last_tag'      => $last_tag,
             'has_readme'    => $has_readme,
-            'type'          => ( isset($composer['type']) ? $composer['type'] : 'unknown' ),
-            'name'          => ( isset($composer['name']) ? $composer['name'] : 'unknown' ),
-            'authors'       => ( isset($composer['authors']) ? $composer['authors'] : 'unknown' ),
+            'type'          => (isset($composer['type']) ? $composer['type'] : 'unknown'),
+            'name'          => (isset($composer['name']) ? $composer['name'] : 'unknown'),
+            'authors'       => (isset($composer['authors']) ? $composer['authors'] : 'unknown'),
             'langs'         => [
                 'en' => file_exists($this->getLangPath($dir, 'en')),
                 'cs' => file_exists($this->getLangPath($dir, 'cs')),
-            ]
+            ],
         ];
 
         return $repo;
@@ -154,7 +157,7 @@ class GithelpersController extends AdminController
 
     public function refreshRepoInformation($dir)
     {
-        Cache::forget('sanatorium.githelper.'.$dir);
+        Cache::forget('sanatorium.githelper.' . $dir);
 
         $this->getRepoInformation($dir);
     }
@@ -182,7 +185,7 @@ class GithelpersController extends AdminController
 
         $readmePath = $this->getReadmePath($dir);
 
-        if (file_exists($readmePath))
+        if ( file_exists($readmePath) )
         {
             $this->alerts->error(trans('sanatorium/githelper::common.messages.readme.exists'));
 
@@ -204,7 +207,7 @@ class GithelpersController extends AdminController
     {
         $composerJsonPath = $dir . '/composer.json';
 
-        if (file_exists($composerJsonPath))
+        if ( file_exists($composerJsonPath) )
         {
             $info = json_decode(file_get_contents($composerJsonPath), true);
         }
@@ -217,9 +220,9 @@ class GithelpersController extends AdminController
         $info = $this->getComposerInfo($dir);
 
         return
-            "# ".$info['name']."
+            "# " . $info['name'] . "
 
-".$info['description']."
+" . $info['description'] . "
 
 ## Documentation
 
@@ -233,6 +236,6 @@ Changelog not available.
 
 Support not available.";
 
-	}
+    }
 
 }
