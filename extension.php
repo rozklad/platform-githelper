@@ -67,7 +67,7 @@ return [
 	|
 	*/
 
-	'version' => '0.1.0',
+	'version' => '0.2.0',
 
 	/*
 	|--------------------------------------------------------------------------
@@ -149,7 +149,7 @@ return [
 		], function(){
 
 			Route::get('/', ['as' => 'sanatorium.githelper.index', 'uses' => 'GithelpersController@index']);
-			Route::get('tagpush', ['as' => 'sanatorium.githelper.tagpush', 'uses' => 'GithelpersController@tagpush']);
+			Route::get('tagpush/{type}', ['as' => 'sanatorium.githelper.tagpush', 'uses' => 'GithelpersController@tagpush']);
 			Route::get('readme', ['as' => 'sanatorium.githelper.readme', 'uses' => 'GithelpersController@readme']);
 
 		});

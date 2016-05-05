@@ -18,6 +18,9 @@ return [
 
     'buttons' => [
         'readme'  => 'Create Readme file',
-        'tagpush' => 'Increase tag version and push',
+        'tagpush' => [
+            'default' => 'Increase tag version and push',
+            'minor' => 'Increase tag minor version and push',
+        ],
     ],
 ];

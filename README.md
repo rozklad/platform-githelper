@@ -8,7 +8,7 @@ No documentation available.
 
 ## Changelog
 
-Changelog not available.
+- 0.2.0 - Further version control, showing checklist for nice-to-have features of extensions (readme, lanuages)
 
 ## Support
 

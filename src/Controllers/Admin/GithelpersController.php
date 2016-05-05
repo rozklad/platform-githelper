@@ -53,9 +53,10 @@ class GithelpersController extends AdminController
     /**
      * Increase version in tag (f.e. 0.1.0 -> 0.1.1)
      * and push to remote origin master
+     * Versioning used: MAJOR.MINOR.PATCH (1.0.0)
      * @return mixed
      */
-    public function tagpush()
+    public function tagpush($type = 'patch')
     {
         $dir = request()->get('dir');
 
@@ -65,13 +66,13 @@ class GithelpersController extends AdminController
 
         list($major, $minor, $patch) = explode('.', $repo['last_tag']);
 
-        if ($patch < 9)
+        if ($patch < 9 && $type == 'patch')
         {
             $patch ++;
             $new_tag = sprintf($version_format, $major, $minor, $patch);
         } else
         {
-            if ($minor < 9)
+            if ($minor < 9 && ($type == 'minor' || $type == 'patch') )
             {
                 $patch = 0;
                 $minor ++;
@@ -106,6 +107,7 @@ class GithelpersController extends AdminController
      */
     public function getRepoInformation($dir, $cache = true)
     {
+        Cache::forget('sanatorium.githelper.'.$dir);
         if ( $cache ) {
             $repo = Cache::rememberForever('sanatorium.githelper.'.$dir, function() use ($dir) {
                 return $this->getRepoInformation($dir, false);
@@ -120,6 +122,7 @@ class GithelpersController extends AdminController
         $changed_files = $this->getChangedFilesCountFromDir($dir);
         $last_tag = $this->getLastTagFromDir($dir);
         $has_readme = file_exists($this->getReadmePath($dir));
+        $composer = $this->getComposerInfo($dir);
 
         $repo = [
             'dir'           => $dir,
@@ -127,6 +130,13 @@ class GithelpersController extends AdminController
             'changed_files' => $changed_files,
             'last_tag'      => $last_tag,
             'has_readme'    => $has_readme,
+            'type'          => ( isset($composer['type']) ? $composer['type'] : 'unknown' ),
+            'name'          => ( isset($composer['name']) ? $composer['name'] : 'unknown' ),
+            'authors'       => ( isset($composer['authors']) ? $composer['authors'] : 'unknown' ),
+            'langs'         => [
+                'en' => file_exists($this->getLangPath($dir, 'en')),
+                'cs' => file_exists($this->getLangPath($dir, 'cs')),
+            ]
         ];
 
         return $repo;
@@ -156,6 +166,13 @@ class GithelpersController extends AdminController
         return $dir . '/' . $readmeFilename;
     }
 
+    public function getLangPath($dir = null, $lang = null)
+    {
+        $langFolder = 'lang/' . $lang;
+
+        return $dir . '/' . $langFolder;
+    }
+
     /**
      * Create readme file if does not exist
      */
@@ -183,7 +200,7 @@ class GithelpersController extends AdminController
         return redirect()->back();
     }
 
-    public function getReadmeContents($dir = null)
+    public function getComposerInfo($dir = null)
     {
         $composerJsonPath = $dir . '/composer.json';
 
@@ -191,6 +208,13 @@ class GithelpersController extends AdminController
         {
             $info = json_decode(file_get_contents($composerJsonPath), true);
         }
+
+        return $info;
+    }
+
+    public function getReadmeContents($dir = null)
+    {
+        $info = $this->getComposerInfo($dir);
 
         return
             "# ".$info['name']."
