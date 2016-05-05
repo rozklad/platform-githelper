@@ -93,7 +93,7 @@ class GithelpersController extends AdminController
         exec('git -C "' . $dir . '" tag ' . $new_tag);
         exec('git -C "' . $dir . '" push -u origin master --tags');
 
-        $this->refreshRepoInformation($dir);
+        $this->flushCache($dir);
 
         // @todo - catch exceptions
         $this->alerts->success(trans('sanatorium/githelper::common.messages.tagpush.success', ['tag' => $new_tag]));
@@ -148,6 +148,8 @@ class GithelpersController extends AdminController
     public function flushCache($dir = null)
     {
         Cache::forget('sanatorium.githelper.' . $dir);
+
+        $this->getRepoInformation($dir);
     }
 
     /**
@@ -189,13 +191,6 @@ class GithelpersController extends AdminController
     public function getLastTagFromDir($dir)
     {
         return exec('git -C "' . $dir . '" describe --tags');
-    }
-
-    public function refreshRepoInformation($dir)
-    {
-        Cache::forget('sanatorium.githelper.' . $dir);
-
-        $this->getRepoInformation($dir);
     }
 
     public function getReadmePath($dir = null)
