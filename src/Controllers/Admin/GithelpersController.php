@@ -66,7 +66,7 @@ class GithelpersController extends AdminController
         $version_format = '%d.%d.%d';
 
         list($major, $minor, $patch) = explode('.', $repo['last_tag']);
-        
+
         if ( $patch < 9 && $type == 'patch' )
         {
             $patch ++;
@@ -145,6 +145,42 @@ class GithelpersController extends AdminController
         return $repo;
     }
 
+    public function flushCache($dir = null)
+    {
+        Cache::forget('sanatorium.githelper.' . $dir);
+    }
+
+    /**
+     * Refresh information about repository
+     * @param null $dir
+     * @return mixed
+     */
+    public function refresh($dir = null)
+    {
+        $this->flushCache($dir);
+
+        $this->alerts->success(trans('sanatorium/githelper::common.messages.refresh.success'));
+
+        return redirect()->back();
+    }
+
+    /**
+     * Remove the last used tag on repository
+     * @param $dir
+     */
+    public function untag($dir = null)
+    {
+        $repo = $this->getRepoInformation($dir, false);
+
+        exec('git -C "' . $dir . '" tag -d ' . $repo['last_tag']);
+
+        $this->flushCache($dir);
+
+        $this->alerts->success(trans('sanatorium/githelper::common.messages.untag.success', ['tag' => $repo['last_tag']]));
+
+        return redirect()->back();
+    }
+
     public function getChangedFilesCountFromDir($dir)
     {
         return (int) exec('git -C "' . $dir . '" status | grep \'modified:\' | wc -l');
@@ -212,7 +248,12 @@ class GithelpersController extends AdminController
             $info = json_decode(file_get_contents($composerJsonPath), true);
         }
 
-        return $info;
+        if ( isset($info) )
+        {
+            return $info;
+        }
+
+        return [];
     }
 
     public function getReadmeContents($dir = null)

@@ -66,6 +66,8 @@
                     <th>Basename</th>
                     <th>Tag</th>
                     <th>Changed files</th>
+                    <th>Checklist</th>
+                    <th>Authors</th>
                     <th></th>
                 </thead>
                 <tbody>
@@ -117,15 +119,27 @@
                             </small>
                         </td>
                         <td class="text-right">
-                            <a href="{{ route('sanatorium.githelper.readme', ['type' => 'patch']) }}?dir={{ $repo['dir'] }}" class="btn btn-default btn-sm" data-toggle="tooltip" data-title="{{ trans('sanatorium/githelper::common.buttons.readme') }}">
+                            <a href="{{ route('sanatorium.githelper.readme') }}?dir={{ $repo['dir'] }}" class="btn btn-default btn-sm" data-toggle="tooltip" data-title="{{ trans('sanatorium/githelper::common.buttons.readme') }}">
                                 <i class="fa fa-file-text" aria-hidden="true"></i>
+                            </a>
+
+                            <a href="{{ route('sanatorium.githelper.refresh') }}?dir={{ $repo['dir'] }}" class="btn btn-default btn-sm" data-toggle="tooltip" data-title="{{ trans('sanatorium/githelper::common.buttons.refresh') }}">
+                                <i class="fa fa-refresh" aria-hidden="true"></i>
+                            </a>
+
+                            <a href="{{ route('sanatorium.githelper.untag') }}?dir={{ $repo['dir'] }}" class="btn btn-default btn-sm" data-toggle="tooltip" data-title="{{ trans('sanatorium/githelper::common.buttons.untag') }}">
+                                <i class="fa fa-times" aria-hidden="true"></i>
+                            </a>
+
+                            <a href="{{ route('sanatorium.githelper.tagpush', ['type' => 'major']) }}?dir={{ $repo['dir'] }}" class="btn btn-default btn-sm" data-toggle="tooltip" data-title="{{ trans('sanatorium/githelper::common.buttons.tagpush.major') }}">
+                                <i class="fa fa-arrow-circle-up" aria-hidden="true"></i>
                             </a>
 
                             <a href="{{ route('sanatorium.githelper.tagpush', ['type' => 'minor']) }}?dir={{ $repo['dir'] }}" class="btn btn-default btn-sm" data-toggle="tooltip" data-title="{{ trans('sanatorium/githelper::common.buttons.tagpush.minor') }}">
                                 <i class="fa fa-arrow-circle-o-up" aria-hidden="true"></i>
                             </a>
 
-                            <a href="{{ route('sanatorium.githelper.tagpush') }}?dir={{ $repo['dir'] }}" class="btn btn-default btn-sm" data-toggle="tooltip" data-title="{{ trans('sanatorium/githelper::common.buttons.tagpush.default') }}">
+                            <a href="{{ route('sanatorium.githelper.tagpush', ['type' => 'patch']) }}?dir={{ $repo['dir'] }}" class="btn btn-default btn-sm" data-toggle="tooltip" data-title="{{ trans('sanatorium/githelper::common.buttons.tagpush.patch') }}">
                                 <i class="fa fa-cloud-upload" aria-hidden="true"></i>
                             </a>
                         </td>

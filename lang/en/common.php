@@ -6,21 +6,27 @@ return [
     'messages' => [
         'tagpush' => [
             'success' => 'Repository was successfully tagged with :tag and pushed to remote',
-
         ],
         'readme'  => [
             'success' => 'Readme file was succesfully created',
             'exists'  => 'Readme file already exists in given location',
-
         ],
-
+        'untag' => [
+            'success' => 'Last tag :tag was succesfully removed from repository',
+        ],
+        'refresh' => [
+            'success' => 'Repository information was succesfully refreshed',
+        ],
     ],
 
     'buttons' => [
         'readme'  => 'Create Readme file',
         'tagpush' => [
-            'default' => 'Increase tag version and push',
+            'patch' => 'Increase tag version and push',
             'minor' => 'Increase tag minor version and push',
+            'major' => 'Increase tag major version and push',
         ],
+        'refresh' => 'Flush cache',
+        'untag' => 'Remove last used tag',
     ],
 ];

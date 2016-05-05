@@ -150,6 +150,8 @@ return [
 
 			Route::get('/', ['as' => 'sanatorium.githelper.index', 'uses' => 'GithelpersController@index']);
 			Route::get('tagpush/{type}', ['as' => 'sanatorium.githelper.tagpush', 'uses' => 'GithelpersController@tagpush']);
+			Route::get('untag', ['as' => 'sanatorium.githelper.untag', 'uses' => 'GithelpersController@untag']);
+			Route::get('refresh', ['as' => 'sanatorium.githelper.refresh', 'uses' => 'GithelpersController@refresh']);
 			Route::get('readme', ['as' => 'sanatorium.githelper.readme', 'uses' => 'GithelpersController@readme']);
 
 		});
