@@ -88,6 +88,8 @@ class GithelpersController extends AdminController
 
         }
 
+        $this->updateExtensionVersion($dir, $new_tag);
+
         exec('git -C "' . $dir . '" add --all');
         exec('git -C "' . $dir . '" commit -a -m "automatic commit"');
         exec('git -C "' . $dir . '" tag ' . $new_tag);
@@ -249,6 +251,27 @@ class GithelpersController extends AdminController
         }
 
         return [];
+    }
+
+    public function updateExtensionVersion($dir, $new_version = null)
+    {
+
+        $extensionFilePath = $dir . '/extension.php';
+
+        if ( $new_version && file_exists($extensionFilePath) ) {
+
+            $currentContents = file_get_contents($extensionFilePath);
+
+            $newFileContents = preg_replace("/'version' => '(.*)',/", "'version' => '".$new_version."',", $currentContents, 1);
+
+            file_put_contents($extensionFilePath, $newFileContents);
+
+            return true;
+
+        }
+
+        return false;
+
     }
 
     public function getReadmeContents($dir = null)
