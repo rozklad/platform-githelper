@@ -236,6 +236,12 @@ class GithelpersController extends AdminController
         return redirect()->back();
     }
 
+    /**
+     * Returns parsed composer.json information.
+     *
+     * @param null $dir
+     * @return array
+     */
     public function getComposerInfo($dir = null)
     {
         $composerJsonPath = $dir . '/composer.json';
@@ -253,6 +259,15 @@ class GithelpersController extends AdminController
         return [];
     }
 
+    /**
+     * Sets new version in extension.php file
+     * of selected extension, replacing the
+     * current version of the package.
+     *
+     * @param      $dir
+     * @param null $new_version
+     * @return bool
+     */
     public function updateExtensionVersion($dir, $new_version = null)
     {
 
@@ -274,6 +289,12 @@ class GithelpersController extends AdminController
 
     }
 
+    /**
+     * Get default README.md file contents.
+     * 
+     * @param null $dir
+     * @return string
+     */
     public function getReadmeContents($dir = null)
     {
         $info = $this->getComposerInfo($dir);
