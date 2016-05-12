@@ -229,7 +229,7 @@ class GithelpersController extends AdminController
 
         file_put_contents($readmePath, $readmeContents);
 
-        $this->refreshRepoInformation($dir);
+        $this->refresh($dir);
 
         $this->alerts->success(trans('sanatorium/githelper::common.messages.readme.success'));
 
@@ -291,7 +291,7 @@ class GithelpersController extends AdminController
 
     /**
      * Get default README.md file contents.
-     * 
+     *
      * @param null $dir
      * @return string
      */
