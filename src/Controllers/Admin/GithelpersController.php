@@ -65,7 +65,13 @@ class GithelpersController extends AdminController
 
         $version_format = '%d.%d.%d';
 
-        list($major, $minor, $patch) = explode('.', $repo['last_tag']);
+        $versions = explode('.', $repo['last_tag']);
+
+        array_walk($versions, function(&$item){
+            intval($item);
+        });
+
+        list($major, $minor, $patch) = $versions;
 
         if ( $patch < 9 && $type == 'patch' )
         {
