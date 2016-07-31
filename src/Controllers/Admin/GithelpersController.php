@@ -305,10 +305,30 @@ class GithelpersController extends AdminController
     {
         $info = $this->getComposerInfo($dir);
 
-        return
-            "# " . $info['name'] . "
+        return  str_replace(
+            [
+                '{{name}}',
+                '{{description}}'
+            ],
+            [
+                $info['name'],
+                $info['description']
+            ], self::getReadmeTemplate());
 
-" . $info['description'] . "
+    }
+
+    public static function getReadmeTemplate()
+    {
+        return "# {{name}}
+
+{{description}}
+
+## Contents
+
+1. [Documentation](#documentation)
+2. [Changelog](#changelog)
+3. [Support](#support)
+4. [Hooks](#hooks)
 
 ## Documentation
 
@@ -320,8 +340,13 @@ Changelog not available.
 
 ## Support
 
-Support not available.";
+Support not available.
 
+## Hooks
+
+List of currently used hooks:
+
+    'sample' => '{{name}}::hooks.sample'";
     }
 
 }
