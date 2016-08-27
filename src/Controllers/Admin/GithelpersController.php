@@ -283,7 +283,7 @@ class GithelpersController extends AdminController
             $this->tagpush($type = 'version', $dir, $new_tag, $message);
         }
 
-        $this->alerts->success(trans('sanatorium/githelper::common.messages.align.success', compact('message', 'align')));
+        $this->alerts->success(trans('sanatorium/githelper::common.messages.align.success', compact('message', 'new_tag')));
 
         return redirect()->back();
     }

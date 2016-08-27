@@ -19,7 +19,7 @@ return [
         ],
         'align' => [
             'noversion' => 'Version was not specified',
-            'success' => 'Repositories were succesfully set to version :align with message you :message'
+            'success' => 'Repositories were succesfully set to version :new_tag with message you :message'
         ]
     ],
 
