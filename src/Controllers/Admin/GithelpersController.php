@@ -86,6 +86,10 @@ class GithelpersController extends AdminController
                 intval($item);
             });
 
+            // hotfix if version number is N.0 instead of N.0.0
+            if ( !isset($versions[2]) )
+                $versions[2] = 0;
+
             list($major, $minor, $patch) = $versions;
 
             if ( $patch < 9 && $type == 'patch' )
@@ -279,7 +283,7 @@ class GithelpersController extends AdminController
             $this->tagpush($type = 'version', $dir, $new_tag, $message);
         }
 
-        $this->alerts->success(trans('sanatorium/githelper::common.messages.align.success'));
+        $this->alerts->success(trans('sanatorium/githelper::common.messages.align.success', compact('message', 'align')));
 
         return redirect()->back();
     }

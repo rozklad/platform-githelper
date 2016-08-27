@@ -17,6 +17,10 @@ return [
         'refresh' => [
             'success' => 'Repository information was succesfully refreshed',
         ],
+        'align' => [
+            'noversion' => 'Version was not specified',
+            'success' => 'Repositories were succesfully set to version :align with message you :message'
+        ]
     ],
 
     'buttons' => [
