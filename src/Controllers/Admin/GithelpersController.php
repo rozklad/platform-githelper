@@ -14,6 +14,13 @@ class GithelpersController extends AdminController
      */
     public function index()
     {
+        $repos = $this->getRepositories();
+
+        return view('sanatorium/githelper::index', compact('repos'));
+    }
+
+    public function getRepositories($full = true)
+    {
         // Output repos
         $repos = [];
 
@@ -35,7 +42,10 @@ class GithelpersController extends AdminController
                 if ( $is_repo )
                 {
 
-                    $repo = $this->getRepoInformation($dir);
+                    if ( $full )
+                        $repo = $this->getRepoInformation($dir);
+                    else
+                        $repo = $dir;
 
                     $repos[ $dir ] = $repo;
 
@@ -47,7 +57,7 @@ class GithelpersController extends AdminController
 
         ksort($repos);
 
-        return view('sanatorium/githelper::index', compact('repos'));
+        return $repos;
     }
 
     /**
@@ -57,47 +67,56 @@ class GithelpersController extends AdminController
      *
      * @return mixed
      */
-    public function tagpush($type = 'patch')
+    public function tagpush($type = 'patch', $dir = null, $new_tag = null, $message = null)
     {
-        $dir = request()->get('dir');
+        if ( is_null($dir) )
+            $dir = request()->get('dir');
 
         $repo = $this->getRepoInformation($dir);
 
-        $version_format = '%d.%d.%d';
-
-        $versions = explode('.', $repo['last_tag']);
-
-        array_walk($versions, function(&$item){
-            intval($item);
-        });
-
-        list($major, $minor, $patch) = $versions;
-
-        if ( $patch < 9 && $type == 'patch' )
+        // If new tag is not specified, figure out ourselves
+        if ( is_null($new_tag) )
         {
-            $patch ++;
-            $new_tag = sprintf($version_format, $major, $minor, $patch);
-        } else
-        {
-            if ( $minor < 9 && ($type == 'minor' || $type == 'patch') )
+            $version_format = '%d.%d.%d';
+
+            $versions = explode('.', $repo['last_tag']);
+
+            array_walk($versions, function (&$item)
             {
-                $patch = 0;
-                $minor ++;
+                intval($item);
+            });
+
+            list($major, $minor, $patch) = $versions;
+
+            if ( $patch < 9 && $type == 'patch' )
+            {
+                $patch ++;
                 $new_tag = sprintf($version_format, $major, $minor, $patch);
             } else
             {
-                $patch = 0;
-                $minor = 0;
-                $major ++;
-                $new_tag = sprintf($version_format, $major, $minor, $patch);
-            }
+                if ( $minor < 9 && ($type == 'minor' || $type == 'patch') )
+                {
+                    $patch = 0;
+                    $minor ++;
+                    $new_tag = sprintf($version_format, $major, $minor, $patch);
+                } else
+                {
+                    $patch = 0;
+                    $minor = 0;
+                    $major ++;
+                    $new_tag = sprintf($version_format, $major, $minor, $patch);
+                }
 
+            }
         }
 
         $this->updateExtensionVersion($dir, $new_tag);
 
+        if ( is_null($message) )
+            $message = 'automatic commit';
+
         exec('git -C "' . $dir . '" add --all');
-        exec('git -C "' . $dir . '" commit -a -m "automatic commit"');
+        exec('git -C "' . $dir . '" commit -a -m "'.$message.'"');
         exec('git -C "' . $dir . '" tag ' . $new_tag);
         exec('git -C "' . $dir . '" push -u origin master --tags');
 
@@ -238,6 +257,29 @@ class GithelpersController extends AdminController
         $this->refresh($dir);
 
         $this->alerts->success(trans('sanatorium/githelper::common.messages.readme.success'));
+
+        return redirect()->back();
+    }
+
+    public function align()
+    {
+        if ( ! request()->has('align') )
+        {
+            $this->alerts->error(trans('sanatorium/githelper::common.messages.align.noversion'));
+
+            return redirect()->back();
+        }
+
+        $repos = $this->getRepositories( $full = false );
+        $new_tag = request()->get('align');
+        $message = request()->get('message');
+
+        foreach( $repos as $dir )
+        {
+            $this->tagpush($type = 'version', $dir, $new_tag, $message);
+        }
+
+        $this->alerts->success(trans('sanatorium/githelper::common.messages.align.success'));
 
         return redirect()->back();
     }

@@ -67,7 +67,7 @@ return [
 	|
 	*/
 
-	'version' => '2.1.0',
+	'version' => '3.0',
 
 	/*
 	|--------------------------------------------------------------------------
@@ -153,6 +153,8 @@ return [
 			Route::get('untag', ['as' => 'sanatorium.githelper.untag', 'uses' => 'GithelpersController@untag']);
 			Route::get('refresh', ['as' => 'sanatorium.githelper.refresh', 'uses' => 'GithelpersController@refresh']);
 			Route::get('readme', ['as' => 'sanatorium.githelper.readme', 'uses' => 'GithelpersController@readme']);
+
+            Route::get('align', ['as' => 'sanatorium.githelper.align', 'uses' => 'GithelpersController@align']);
 
 		});
 

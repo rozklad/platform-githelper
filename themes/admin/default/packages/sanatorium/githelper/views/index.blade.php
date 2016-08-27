@@ -61,6 +61,22 @@
 
             </header>
 
+            <div class="panel-body">
+
+                <form class="navbar-form navbar-left" action="{{ route('sanatorium.githelper.align') }}">
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="Version" name="align" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="Message" name="message" required>
+                    </div>
+                    <button type="submit" class="btn btn-default">
+                        Align
+                    </button>
+                </form>
+
+            </div>
+
             <table class="table table-responsive">
                 <thead>
                     <th>Basename</th>
