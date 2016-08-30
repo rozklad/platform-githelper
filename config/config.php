@@ -14,8 +14,8 @@ return [
     */
 
     'paths' => [
-        '/Users/Mac/Sites/Works/Platform/Development/extensions/sanatorium',
-        '/Users/Mac/Sites/Works/Platform/langs',
+        'extensions/sanatorium',
+        '../langs',
     ]
     
 ];

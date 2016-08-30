@@ -29,7 +29,7 @@ class GithelpersController extends AdminController
 
         foreach ( $paths as $path )
         {
-            $dirs = array_filter(glob($path . '/*'), 'is_dir');
+            $dirs = array_filter(glob(base_path($path) . '/*'), 'is_dir');
 
             foreach ( $dirs as $dir )
             {
