@@ -8,7 +8,8 @@ No documentation available.
 
 ## Changelog
 
-- 0.2.0 - Further version control, showing checklist for nice-to-have features of extensions (readme, lanuages)
+- 3.0.5 - 2016-09-30 - Configurable version limits
+- 0.2.0 - 2016-05-05 - Further version control, showing checklist for nice-to-have features of extensions (readme, lanuages)
 
 ## Support
 

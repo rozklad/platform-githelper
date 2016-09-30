@@ -67,7 +67,7 @@ class GithelpersController extends AdminController
      *
      * @return mixed
      */
-    public function tagpush($type = 'patch', $dir = null, $new_tag = null, $message = null)
+    public function tagpush($type = 'patch', $dir = null, $new_tag = null, $message = null, $patch_version_limit = 100, $minor_version_limit = 10)
     {
         if ( is_null($dir) )
             $dir = request()->get('dir');
@@ -92,13 +92,13 @@ class GithelpersController extends AdminController
 
             list($major, $minor, $patch) = $versions;
 
-            if ( $patch < 9 && $type == 'patch' )
+            if ( $patch < $patch_version_limit && $type == 'patch' )
             {
                 $patch ++;
                 $new_tag = sprintf($version_format, $major, $minor, $patch);
             } else
             {
-                if ( $minor < 9 && ($type == 'minor' || $type == 'patch') )
+                if ( $minor < $minor_version_limit && ($type == 'minor' || $type == 'patch') )
                 {
                     $patch = 0;
                     $minor ++;
