@@ -75,6 +75,21 @@
                     </button>
                 </form>
 
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="{{ route('sanatorium.githelper.bulk.patch') }}" class="btn btn-default navbar-btn">
+                            <i class="fa fa-cloud-upload"></i>
+                            Bulk patch
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ route('sanatorium.githelper.tag') }}" class="btn btn-default navbar-btn">
+                            <i class="fa fa-tags"></i>
+                            Tag all
+                        </a>
+                    </li>
+                </ul>
+
             </div>
 
             <table class="table table-responsive">

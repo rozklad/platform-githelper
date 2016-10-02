@@ -231,6 +231,13 @@ class GithelpersController extends AdminController
         return $dir . '/' . $readmeFilename;
     }
 
+    public function getComposerPath($dir = null)
+    {
+        $composerFilename = 'composer.json';
+
+        return $dir . '/' . $composerFilename;
+    }
+
     public function getLangPath($dir = null, $lang = null)
     {
         $langFolder = 'lang/' . $lang;
@@ -263,6 +270,57 @@ class GithelpersController extends AdminController
         $this->alerts->success(trans('sanatorium/githelper::common.messages.readme.success'));
 
         return redirect()->back();
+    }
+
+    public function tag($dir = null)
+    {
+        if ( request()->has('dir') )
+        {
+            $dir = request()->get('dir');
+        }
+
+        if ( !$dir ) {
+            $dirs = $this->getRepositories(false);
+
+            foreach( $dirs as $dir ) {
+                $this->tag($dir);
+            }
+
+            return redirect()->back();
+        }
+
+        $composerPath = $this->getComposerPath($dir);
+
+        if ( !file_exists($composerPath) )
+        {
+            // Package has no composer
+            return false;
+        }
+
+        $composer = json_decode( file_get_contents($composerPath), true );
+
+        if ( !isset($composer['keywords']) ) {
+            $composer['keywords'] = [
+                "laravel",
+                "cartalyst",
+                "platform",
+                "extension",
+                "madeinsane"
+            ];
+        }
+
+        file_put_contents($composerPath, json_encode($composer, JSON_UNESCAPED_SLASHES|JSON_PRETTY_PRINT));
+
+        return true;
+    }
+
+    public function bulkPatch()
+    {
+        $dirs = $this->getRepositories(false);
+
+        foreach( $dirs as $dir ) {
+            $this->tagpush('patch', $dir);
+        }
     }
 
     public function align()
