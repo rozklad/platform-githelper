@@ -67,7 +67,7 @@ return [
 	|
 	*/
 
-	'version' => '3.0.7',
+	'version' => '3.0.8',
 
 	/*
 	|--------------------------------------------------------------------------
@@ -155,7 +155,7 @@ return [
 			Route::get('readme', ['as' => 'sanatorium.githelper.readme', 'uses' => 'GithelpersController@readme']);
 
             Route::get('align', ['as' => 'sanatorium.githelper.align', 'uses' => 'GithelpersController@align']);
-            Route::get('tag', ['as' => 'sanatorium.githelper.tag', 'uses' => 'GithelpersController@tag']);
+            Route::get('tag', ['as' => 'sanatorium.githelper.keywords', 'uses' => 'GithelpersController@keywords']);
 
             Route::group([
                 'prefix' => 'bulk'

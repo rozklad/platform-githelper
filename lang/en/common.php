@@ -32,5 +32,10 @@ return [
         ],
         'refresh' => 'Flush cache',
         'untag' => 'Remove last used tag',
+        'align' => 'Align',
+        'bulk' => [
+            'patch' => 'Bulk patch'
+        ],
+        'keywords' => 'Keywords all',
     ],
 ];

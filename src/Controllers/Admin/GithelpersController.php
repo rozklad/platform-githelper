@@ -167,6 +167,8 @@ class GithelpersController extends AdminController
             'type'          => (isset($composer['type']) ? $composer['type'] : 'unknown'),
             'name'          => (isset($composer['name']) ? $composer['name'] : 'unknown'),
             'authors'       => (isset($composer['authors']) ? $composer['authors'] : 'unknown'),
+            'description'   => (isset($composer['description']) ? $composer['description'] : 'no description available'),
+            'keywords'      => (isset($composer['keywords']) ? $composer['keywords'] : 'unknown'),
             'langs'         => [
                 'en' => file_exists($this->getLangPath($dir, 'en')),
                 'cs' => file_exists($this->getLangPath($dir, 'cs')),
@@ -272,7 +274,12 @@ class GithelpersController extends AdminController
         return redirect()->back();
     }
 
-    public function tag($dir = null)
+    /**
+     * @param null  $dir
+     * @param array $keywords
+     * @return bool
+     */
+    public function keywords($dir = null, $keywords = ["laravel", "cartalyst", "platform", "extension", "madeinsane"])
     {
         if ( request()->has('dir') )
         {
@@ -283,7 +290,7 @@ class GithelpersController extends AdminController
             $dirs = $this->getRepositories(false);
 
             foreach( $dirs as $dir ) {
-                $this->tag($dir);
+                $this->keywords($dir);
             }
 
             return redirect()->back();
@@ -300,13 +307,7 @@ class GithelpersController extends AdminController
         $composer = json_decode( file_get_contents($composerPath), true );
 
         if ( !isset($composer['keywords']) ) {
-            $composer['keywords'] = [
-                "laravel",
-                "cartalyst",
-                "platform",
-                "extension",
-                "madeinsane"
-            ];
+            $composer['keywords'] = $keywords;
         }
 
         file_put_contents($composerPath, json_encode($composer, JSON_UNESCAPED_SLASHES|JSON_PRETTY_PRINT));

@@ -71,7 +71,7 @@
                         <input type="text" class="form-control" placeholder="Message" name="message" required>
                     </div>
                     <button type="submit" class="btn btn-default">
-                        Align
+                        {{ trans('sanatorium/githelper::common.buttons.align') }}
                     </button>
                 </form>
 
@@ -79,13 +79,13 @@
                     <li>
                         <a href="{{ route('sanatorium.githelper.bulk.patch') }}" class="btn btn-default navbar-btn">
                             <i class="fa fa-cloud-upload"></i>
-                            Bulk patch
+                            {{ trans('sanatorium/githelper::common.buttons.bulk.patch') }}
                         </a>
                     </li>
                     <li>
-                        <a href="{{ route('sanatorium.githelper.tag') }}" class="btn btn-default navbar-btn">
+                        <a href="{{ route('sanatorium.githelper.keywords') }}" class="btn btn-default navbar-btn">
                             <i class="fa fa-tags"></i>
-                            Tag all
+                            {{ trans('sanatorium/githelper::common.buttons.keywords') }}
                         </a>
                     </li>
                 </ul>
@@ -106,7 +106,11 @@
                     <tr class="{{ ($repo['changed_files'] ? 'success' : '') }}">
                         <td>
                             <strong>{{ $repo['basename'] }}</strong><br>
-                            {{ $repo['name'] }}
+                            {{ $repo['name'] }}<br>
+                            <small>{{ $repo['description'] }}</small><br>
+                            @foreach( array_get($repo, 'keywords', []) as $tag )
+                                <span class="label label-default">{{ $tag }}</span>
+                            @endforeach
                         </td>
                         <td>
                             {{ $repo['last_tag'] }}
