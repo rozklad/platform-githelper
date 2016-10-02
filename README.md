@@ -156,4 +156,4 @@ Now when you are syncing extensions to git, you might want to always keep your e
 
 ## Support
 
-Support not available.
+Point all questions/issues to github [Issues](https://github.com/sanatorium/platform-githelper/issues), we will attend to them asap.
