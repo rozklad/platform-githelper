@@ -107,7 +107,9 @@
                         <td>
                             <strong>{{ $repo['basename'] }}</strong><br>
                             {{ $repo['name'] }}<br>
+                            @if ( isset($repo['description']) )
                             <small>{{ $repo['description'] }}</small><br>
+                            @endif
                             @foreach( array_get($repo, 'keywords', []) as $tag )
                                 <span class="label label-default">{{ $tag }}</span>
                             @endforeach
